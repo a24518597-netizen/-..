@@ -5,280 +5,613 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>انقلاب اسلامی</title>
 <style>
-  *{margin:0;padding:0;box-sizing:border-box;font-family:Tahoma,sans-serif}
-  body{background:#f4f6f9;color:#333;line-height:1.8}
-  header{background:linear-gradient(135deg,#1a3a5c,#2e5a88);color:#fff;padding:2rem;text-align:center}
-  header h1{font-size:2rem;margin-bottom:.4rem}
-  .container{max-width:1100px;margin:2rem auto;padding:0 1.5rem}
-  .card{background:#fff;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,.08);padding:2rem;margin-bottom:2rem}
-  .card h2{color:#1a3a5c;border-bottom:3px solid #2e5a88;padding-bottom:.5rem;margin-bottom:1.2rem;font-size:1.15rem}
-  .card p{white-space:pre-wrap;text-align:justify;margin-bottom:1rem}
-  .media{display:flex;flex-wrap:wrap;gap:1rem;justify-content:center}
-  .media>div{background:#eef2f7;border-radius:8px;padding:.6rem;text-align:center;flex:1 1 250px;max-width:340px}
-  .media img,.media video{max-width:100%;border-radius:6px;display:block}
-  .sources{list-style:disc;padding-right:1.5rem}
-  .sources li{margin-bottom:.6rem}
-  .comments textarea,.comments input{width:100%;padding:.8rem;border:1px solid #ccc;border-radius:6px;font-family:inherit;margin-bottom:.6rem}
-  .comments textarea{min-height:100px}
-  .btn{background:#2e5a88;color:#fff;border:none;padding:.7rem 2rem;border-radius:6px;cursor:pointer;font-family:inherit;font-size:1rem}
-  .btn:hover{background:#1a3a5c}
-  .btn.danger{background:#c0392b}
+  @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700;900&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Vazirmatn',Tahoma,sans-serif}
+  :root{
+    --primary:#0f4c81; --primary2:#1a6fb5; --accent:#f39c12; --accent2:#e74c3c;
+    --dark:#0a2540; --light:#f0f4f8; --white:#fff; --green:#27ae60; --purple:#8e44ad;
+  }
+  body{background:var(--light);color:#222;line-height:1.9;min-height:100vh}
+
+  /* ============ LOADING ROCKET ============ */
+  #rocketLoader{position:fixed;inset:0;background:linear-gradient(135deg,#0a2540,#0f4c81,#1a6fb5);display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:9999;transition:opacity .5s}
+  #rocketLoader.hide{opacity:0;pointer-events:none}
+  .rocket{font-size:5rem;animation:fly 1.2s ease-in-out infinite;filter:drop-shadow(0 0 20px #f39c12)}
+  @keyframes fly{
+    0%{transform:translateY(0) rotate(-45deg) scale(1)}
+    50%{transform:translateY(-40px) rotate(-45deg) scale(1.15)}
+    100%{transform:translateY(0) rotate(-45deg) scale(1)}
+  }
+  .rocket-text{color:#fff;font-size:1.3rem;margin-top:1rem;letter-spacing:2px}
+  .rocket-sub{color:#f39c12;font-size:.95rem;margin-top:.4rem}
+  .stars{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+  .star{position:absolute;width:3px;height:3px;background:#fff;border-radius:50%;animation:twinkle 2s infinite}
+  @keyframes twinkle{0%,100%{opacity:.2}50%{opacity:1}}
+  .trail{position:absolute;bottom:0;left:50%;width:4px;height:0;background:linear-gradient(to top,#f39c12,transparent);animation:trail 1.2s ease-in-out infinite}
+  @keyframes trail{0%{height:0;opacity:1}50%{height:120px;opacity:.8}100%{height:0;opacity:0}}
+
+  /* ============ PAGE TRANSITION ============ */
+  .page{display:none;animation:slideIn .6s cubic-bezier(.4,0,.2,1)}
+  .page.active{display:block}
+  @keyframes slideIn{from{opacity:0;transform:translateX(60px)}to{opacity:1;transform:translateX(0)}}
+
+  /* ============ HEADER ============ */
+  header.top{background:linear-gradient(135deg,var(--dark),var(--primary),var(--primary2));color:#fff;padding:1.2rem 2rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;box-shadow:0 4px 20px rgba(0,0,0,.2);position:sticky;top:0;z-index:100}
+  header.top h1{font-size:1.5rem;font-weight:900;cursor:pointer;transition:transform .3s}
+  header.top h1:hover{transform:scale(1.05)}
+  header.top h1 span{color:var(--accent)}
+  .nav-btns{display:flex;gap:.6rem;flex-wrap:wrap}
+  .nav-btns button{background:rgba(255,255,255,.15);color:#fff;border:2px solid rgba(255,255,255,.3);padding:.5rem 1.2rem;border-radius:50px;cursor:pointer;font-family:inherit;font-size:.9rem;transition:all .3s;backdrop-filter:blur(10px)}
+  .nav-btns button:hover{background:var(--accent);border-color:var(--accent);transform:translateY(-2px)}
+
+  /* ============ HERO ============ */
+  .hero{background:linear-gradient(135deg,var(--primary),var(--purple));color:#fff;padding:4rem 2rem;text-align:center;position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle,rgba(243,156,18,.15) 0%,transparent 70%);animation:rotate 20s linear infinite}
+  @keyframes rotate{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+  .hero h2{font-size:2.5rem;margin-bottom:1rem;position:relative;font-weight:900}
+  .hero p{font-size:1.1rem;opacity:.95;position:relative;max-width:700px;margin:auto}
+
+  /* ============ TOPICS GRID ============ */
+  .topics{max-width:1200px;margin:3rem auto;padding:0 1.5rem}
+  .topics h3{text-align:center;font-size:1.8rem;color:var(--dark);margin-bottom:2rem}
+  .topics h3::after{content:'';display:block;width:80px;height:4px;background:var(--accent);margin:.6rem auto;border-radius:2px}
+  .topic-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem}
+  .topic-card{background:#fff;border-radius:16px;padding:2rem 1.5rem;text-align:center;cursor:pointer;transition:all .4s;box-shadow:0 4px 20px rgba(0,0,0,.08);position:relative;overflow:hidden;border-bottom:5px solid transparent}
+  .topic-card:hover{transform:translateY(-8px);box-shadow:0 15px 40px rgba(0,0,0,.15);border-bottom-color:var(--accent)}
+  .topic-card::before{content:'';position:absolute;top:0;right:0;width:100%;height:5px;background:linear-gradient(90deg,var(--primary),var(--accent))}
+  .topic-icon{font-size:3rem;margin-bottom:1rem;display:block;transition:transform .4s}
+  .topic-card:hover .topic-icon{transform:scale(1.2) rotate(-10deg)}
+  .topic-card h4{color:var(--primary);font-size:1.2rem;margin-bottom:.5rem}
+  .topic-card p{color:#666;font-size:.9rem}
+
+  /* ============ TOPIC DETAIL ============ */
+  .detail{max-width:900px;margin:2rem auto;padding:0 1.5rem}
+  .back-btn{background:var(--primary);color:#fff;border:none;padding:.6rem 1.5rem;border-radius:50px;cursor:pointer;font-family:inherit;margin-bottom:1.5rem;transition:all .3s}
+  .back-btn:hover{background:var(--dark);transform:translateX(-5px)}
+  .detail-card{background:#fff;border-radius:16px;padding:2.5rem;box-shadow:0 8px 30px rgba(0,0,0,.1);border-top:6px solid var(--accent)}
+  .detail-card h2{color:var(--primary);font-size:1.8rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:.6rem}
+  .detail-card p{text-align:justify;white-space:pre-wrap;margin-bottom:1rem;font-size:1.05rem}
+
+  /* ============ MEDIA ============ */
+  .media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.2rem;margin-top:1.5rem}
+  .media-grid .m-item{background:#f8fafc;border-radius:12px;padding:.6rem;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+  .media-grid img,.media-grid video{width:100%;border-radius:8px;display:block}
+
+  /* ============ COMMENTS ============ */
+  .comments-box{background:#fff;border-radius:16px;padding:2rem;box-shadow:0 8px 30px rgba(0,0,0,.1);margin-top:2rem}
+  .comments-box h3{color:var(--primary);margin-bottom:1rem}
+  .comments-box input,.comments-box textarea{width:100%;padding:.8rem;border:2px solid #e0e6ed;border-radius:10px;font-family:inherit;margin-bottom:.7rem;transition:border .3s}
+  .comments-box input:focus,.comments-box textarea:focus{outline:none;border-color:var(--primary2)}
+  .comments-box textarea{min-height:100px}
+  .btn{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;border:none;padding:.8rem 2rem;border-radius:50px;cursor:pointer;font-family:inherit;font-size:1rem;font-weight:700;transition:all .3s;box-shadow:0 4px 15px rgba(15,76,129,.3)}
+  .btn:hover{transform:translateY(-3px);box-shadow:0 8px 25px rgba(15,76,129,.4)}
+  .btn.danger{background:linear-gradient(135deg,#c0392b,#e74c3c)}
   .btn.small{padding:.4rem 1rem;font-size:.85rem}
-  .comment-item{background:#f8f9fb;border-right:4px solid #2e5a88;padding:.7rem;border-radius:6px;margin-top:.6rem;font-size:.95rem}
-  footer{background:#1a3a5c;color:#ddd;text-align:center;padding:2rem;margin-top:3rem}
-  .authors{color:#fff;font-weight:bold;margin-top:.4rem}
-  .admin-link{position:fixed;bottom:20px;left:20px;background:#333;color:#fff;padding:10px 15px;border-radius:50px;text-decoration:none;font-size:.85rem;opacity:.75;cursor:pointer;border:none}
-  .admin-link:hover{opacity:1}
-  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;justify-content:center;align-items:center;z-index:999;padding:1rem}
-  .overlay.show{display:flex}
-  .modal{background:#fff;border-radius:12px;padding:2rem;width:100%;max-width:420px;box-shadow:0 8px 30px rgba(0,0,0,.3);position:relative}
-  .modal h3{color:#1a3a5c;text-align:center;margin-bottom:1.2rem}
-  .modal input{width:100%;padding:.7rem;margin:.4rem 0;border:1px solid #ccc;border-radius:6px;box-sizing:border-box;font-family:inherit}
-  .modal .btn{width:100%;margin-top:.6rem}
-  .close-x{position:absolute;top:.7rem;left:.9rem;font-size:1.4rem;cursor:pointer;color:#888;background:none;border:none;line-height:1}
-  .msg{padding:.6rem;border-radius:6px;font-size:.9rem;text-align:center;display:none;margin-top:.6rem}
+  .btn.green{background:linear-gradient(135deg,#27ae60,#2ecc71)}
+  .comment-item{background:#f8fafc;border-right:4px solid var(--primary);padding:.8rem;border-radius:8px;margin-top:.6rem;font-size:.95rem}
+  .comment-item b{color:var(--primary)}
+
+  /* ============ AUTH ============ */
+  #authScreen{position:fixed;inset:0;background:linear-gradient(135deg,var(--dark),var(--primary),var(--purple));display:flex;justify-content:center;align-items:center;z-index:1000;padding:1rem;overflow:auto}
+  .auth-box{background:#fff;border-radius:20px;padding:2.5rem;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(0,0,0,.4);animation:popIn .5s}
+  @keyframes popIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+  .auth-box h2{text-align:center;color:var(--primary);margin-bottom:.4rem;font-size:1.6rem}
+  .auth-box .sub{text-align:center;color:#888;font-size:.9rem;margin-bottom:1.5rem}
+  .auth-tabs{display:flex;gap:.4rem;margin-bottom:1.2rem;background:#f0f4f8;padding:.3rem;border-radius:50px}
+  .auth-tabs button{flex:1;padding:.6rem;border:none;background:transparent;border-radius:50px;cursor:pointer;font-family:inherit;font-weight:700;color:#666;transition:all .3s}
+  .auth-tabs button.active{background:var(--primary);color:#fff;box-shadow:0 4px 15px rgba(15,76,129,.3)}
+  .auth-box input{width:100%;padding:.85rem;border:2px solid #e0e6ed;border-radius:10px;font-family:inherit;margin-bottom:.7rem;transition:border .3s;font-size:.95rem}
+  .auth-box input:focus{outline:none;border-color:var(--primary2)}
+  .auth-box .btn{width:100%;margin-top:.4rem}
+  .msg{padding:.7rem;border-radius:10px;font-size:.9rem;text-align:center;display:none;margin-top:.6rem}
   .ok{background:#d4edda;color:#155724;display:block}
   .err{background:#f8d7da;color:#721c24;display:block}
-  .admin-wrap{max-width:950px;margin:auto}
-  .admin-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem}
-  .admin-head h1{font-size:1.4rem;color:#1a3a5c}
-  .tabs{display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap}
-  .tab{padding:.5rem 1rem;background:#eef2f7;border:none;border-radius:6px;cursor:pointer;font-family:inherit}
-  .tab.active{background:#2e5a88;color:#fff}
+  .hint{background:#fff8e1;border-right:4px solid var(--accent);padding:.7rem;border-radius:8px;font-size:.85rem;margin-bottom:1rem;color:#856404}
+
+  /* ============ ADMIN ============ */
+  .admin-container{max-width:1100px;margin:2rem auto;padding:0 1.5rem}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:2rem}
+  .stat-card{background:#fff;border-radius:16px;padding:1.5rem;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.08);border-top:5px solid var(--primary)}
+  .stat-card .num{font-size:2.5rem;font-weight:900;color:var(--primary)}
+  .stat-card .lbl{color:#666;font-size:.9rem;margin-top:.3rem}
+  .stat-card:nth-child(2){border-top-color:var(--accent)}
+  .stat-card:nth-child(2) .num{color:var(--accent)}
+  .stat-card:nth-child(3){border-top-color:var(--green)}
+  .stat-card:nth-child(3) .num{color:var(--green)}
+  .stat-card:nth-child(4){border-top-color:var(--purple)}
+  .stat-card:nth-child(4) .num{color:var(--purple)}
+  .tabs{display:flex;gap:.5rem;margin-bottom:1.5rem;flex-wrap:wrap}
+  .tab{padding:.7rem 1.4rem;background:#fff;border:2px solid #e0e6ed;border-radius:50px;cursor:pointer;font-family:inherit;font-weight:700;color:#666;transition:all .3s}
+  .tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
   .tab-content{display:none}
-  .tab-content.active{display:block}
-  label{display:block;font-size:.9rem;color:#555;margin-top:.5rem}
-  #galleryAdmin .item{border:1px solid #ddd;border-radius:8px;padding:.6rem;text-align:center;background:#fafbfc;display:flex;flex-direction:column;gap:.4rem}
-  #galleryAdmin img,#galleryAdmin video{max-width:100%;border-radius:6px;max-height:150px}
-  .pending-comment{background:#fff8e1;border-right:4px solid #f0ad4e;padding:.7rem;border-radius:6px;margin-top:.6rem;font-size:.9rem}
-  .pending-comment .actions{display:flex;gap:.5rem;margin-top:.4rem}
+  .tab-content.active{display:block;animation:slideIn .4s}
+  .card{background:#fff;border-radius:16px;padding:2rem;box-shadow:0 4px 20px rgba(0,0,0,.08);margin-bottom:1.5rem}
+  .card h3{color:var(--primary);border-bottom:3px solid var(--accent);padding-bottom:.5rem;margin-bottom:1.2rem}
+  label{display:block;font-size:.9rem;color:#555;margin-top:.7rem;font-weight:700}
+  .card input,.card textarea,.card select{width:100%;padding:.7rem;border:2px solid #e0e6ed;border-radius:10px;font-family:inherit;margin-top:.3rem;transition:border .3s}
+  .card input:focus,.card textarea:focus,.card select:focus{outline:none;border-color:var(--primary2)}
+  .card textarea{min-height:90px;resize:vertical}
+  .gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem;margin-top:1rem}
+  .gallery .g-item{border:2px solid #e0e6ed;border-radius:12px;padding:.6rem;text-align:center;background:#fafbfc;transition:all .3s}
+  .gallery .g-item:hover{border-color:var(--primary2)}
+  .gallery img,.gallery video{width:100%;border-radius:8px;max-height:120px;object-fit:cover}
+  .gallery .name{font-size:.75rem;color:#777;word-break:break-all;margin:.3rem 0}
+  .pending{background:#fff8e1;border-right:4px solid var(--accent);padding:.8rem;border-radius:8px;margin-top:.6rem;font-size:.9rem}
+  .pending .actions{display:flex;gap:.5rem;margin-top:.5rem}
+  .member-row{display:flex;justify-content:space-between;align-items:center;padding:.8rem;border-bottom:1px solid #eee;font-size:.9rem;flex-wrap:wrap;gap:.5rem}
+  .member-row .badge{background:var(--primary);color:#fff;padding:.2rem .8rem;border-radius:50px;font-size:.8rem}
+  .member-row .badge.admin{background:var(--accent)}
+
+  /* ============ FOOTER ============ */
+  footer{background:linear-gradient(135deg,var(--dark),var(--primary));color:#ddd;text-align:center;padding:2.5rem 1rem;margin-top:3rem}
+  footer .authors{color:#fff;font-weight:900;margin-top:.5rem;font-size:1.05rem}
+  footer .authors span{color:var(--accent)}
+
+  /* ============ TOAST ============ */
+  #toast{position:fixed;bottom:30px;right:30px;background:var(--dark);color:#fff;padding:1rem 1.5rem;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.3);transform:translateY(150%);transition:transform .4s;z-index:9999;font-size:.9rem}
+  #toast.show{transform:translateY(0)}
+  #toast.success{background:var(--green)}
+  #toast.error{background:var(--accent2)}
 </style>
 </head>
 <body>
 
-<div id="siteView">
-  <header>
-    <h1 id="siteTitle">انقلاب اسلامی</h1>
-    <p>موسس، پشتوانه، چرایی، موانع و مباحث دینی</p>
-  </header>
-  <div class="container">
-    <div class="card"><h2>موسس و پشتوانه</h2><p id="founder"></p></div>
-    <div class="card"><h2>چرایی و موانع</h2><p id="why"></p></div>
-    <div class="card"><h2>مباحث دینی</h2><p id="religion"></p></div>
-    <div class="card"><h2>رسانه</h2><div class="media" id="mediaPublic"></div></div>
-    <div class="card comments">
-      <h2>نظرات و پیشنهادات</h2>
-      <input id="cName" placeholder="نام شما (اختیاری)">
-      <textarea id="cText" placeholder="نظر یا پیشنهاد خود را بنویسید..."></textarea>
-      <button class="btn" id="cBtn">ارسال نظر</button>
-      <div id="cList"></div>
+<!-- ============ ROCKET LOADER ============ -->
+<div id="rocketLoader">
+  <div class="stars" id="stars"></div>
+  <div class="rocket">🚀</div>
+  <div class="trail"></div>
+  <div class="rocket-text">در حال پرتاب...</div>
+  <div class="rocket-sub">انقلاب اسلامی</div>
+</div>
+
+<!-- ============ AUTH SCREEN (اول می‌آید) ============ -->
+<div id="authScreen" style="display:none">
+  <div class="auth-box">
+    <h2>🚀 خوش آمدید</h2>
+    <p class="sub">برای ورود به سایت، وارد شوید یا ثبت‌نام کنید</p>
+    <div class="hint">👤 ادمین پیش‌فرض: <b>admin</b> / رمز: <b>Admin@1403</b></div>
+    <div class="auth-tabs">
+      <button class="active" data-atab="login">ورود</button>
+      <button data-atab="register">ثبت‌نام</button>
     </div>
-    <div class="card"><h2>منابع</h2><ul class="sources" id="sources"></ul></div>
+
+    <!-- Login -->
+    <div id="loginForm">
+      <input id="loginUser" placeholder="نام کاربری">
+      <input id="loginPass" type="password" placeholder="رمز عبور">
+      <button class="btn" id="loginBtn">ورود</button>
+      <div id="m_login" class="msg"></div>
+    </div>
+
+    <!-- Register -->
+    <div id="registerForm" style="display:none">
+      <input id="regName" placeholder="نام و نام خانوادگی">
+      <input id="regUser" placeholder="نام کاربری (یکتا)">
+      <input id="regEmail" type="email" placeholder="ایمیل">
+      <input id="regPass" type="password" placeholder="رمز عبور (حداقل ۶ کاراکتر)">
+      <input id="regPass2" type="password" placeholder="تکرار رمز عبور">
+      <button class="btn" id="registerBtn">ثبت‌نام</button>
+      <div id="m_reg" class="msg"></div>
+    </div>
   </div>
-  <button class="admin-link" id="openAuthBtn">ورود ادمین</button>
+</div>
+
+<!-- ============ MAIN SITE ============ -->
+<div id="mainSite" style="display:none">
+
+  <header class="top">
+    <h1 id="siteTitle" onclick="goHome()">🚀 <span>انقلاب</span> اسلامی</h1>
+    <div class="nav-btns">
+      <button id="navHome">🏠 خانه</button>
+      <button id="navAdmin" style="display:none">⚙️ پنل ادمین</button>
+      <button id="navLogout">🚪 خروج</button>
+    </div>
+  </header>
+
+  <!-- Home Page -->
+  <div class="page active" id="page-home">
+    <div class="hero">
+      <h2 id="heroTitle">انقلاب اسلامی</h2>
+      <p id="heroSub">موسس، پشتوانه، چرایی، موانع و مباحث دینی</p>
+    </div>
+    <div class="topics">
+      <h3>📚 موضوعات</h3>
+      <div class="topic-grid" id="topicGrid"></div>
+    </div>
+    <div class="topics" style="margin-top:1rem">
+      <div class="comments-box">
+        <h3>💬 نظرات و پیشنهادات</h3>
+        <input id="cName" placeholder="نام شما">
+        <textarea id="cText" placeholder="نظر یا پیشنهاد خود را بنویسید..."></textarea>
+        <button class="btn" id="cBtn">ارسال نظر</button>
+        <div id="cList"></div>
+      </div>
+      <div class="comments-box" style="margin-top:1.5rem">
+        <h3>📖 منابع</h3>
+        <ul id="sourcesList" style="padding-right:1.5rem;color:#555"></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Topic Detail Page -->
+  <div class="page" id="page-detail">
+    <div class="detail">
+      <button class="back-btn" onclick="goHome()">← بازگشت</button>
+      <div class="detail-card">
+        <h2 id="detailTitle"></h2>
+        <p id="detailBody"></p>
+        <div class="media-grid" id="detailMedia"></div>
+      </div>
+    </div>
+  </div>
+
   <footer>
-    <p>تمامی حقوق محفوظ است.</p>
-    <p class="authors">نوشته شده توسط: علی عبداله نیا و پرهام حسام پور</p>
+    <p>تمامی حقوق محفوظ است © ۱۴۰۴</p>
+    <p class="authors">نوشته شده توسط: <span>علی عبداله نیا</span> و <span>پرهام حسام پور</span></p>
   </footer>
 </div>
 
-<div id="adminView" class="container" style="display:none">
-  <div class="admin-wrap">
-    <div class="admin-head card">
-      <h1>پنل مدیریت</h1>
-      <div>
-        <span id="who" style="color:#666;font-size:.9rem;margin-left:.7rem"></span>
-        <button class="btn danger small" id="logoutBtn">خروج</button>
+<!-- ============ ADMIN PANEL ============ -->
+<div id="adminPanel" style="display:none">
+  <header class="top">
+    <h1>⚙️ <span>پنل</span> مدیریت</h1>
+    <div class="nav-btns">
+      <button id="adminBack">🏠 بازگشت به سایت</button>
+      <button id="adminLogout">🚪 خروج</button>
+    </div>
+  </header>
+
+  <div class="admin-container">
+    <div class="stats">
+      <div class="stat-card"><div class="num" id="statTopics">0</div><div class="lbl">موضوعات</div></div>
+      <div class="stat-card"><div class="num" id="statMembers">0</div><div class="lbl">اعضا</div></div>
+      <div class="stat-card"><div class="num" id="statComments">0</div><div class="lbl">نظرات</div></div>
+      <div class="stat-card"><div class="num" id="statVisits">0</div><div class="lbl">بازدیدکننده</div></div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="content">📝 موضوعات</button>
+      <button class="tab" data-tab="media">🖼️ رسانه</button>
+      <button class="tab" data-tab="comments">💬 نظرات</button>
+      <button class="tab" data-tab="members">👥 اعضا</button>
+      <button class="tab" data-tab="visitors">📊 بازدید</button>
+      <button class="tab" data-tab="settings">⚙️ تنظیمات</button>
+    </div>
+
+    <!-- Content -->
+    <div class="tab-content active" id="tab-content">
+      <div class="card">
+        <h3>➕ افزودن موضوع جدید</h3>
+        <label>عنوان موضوع</label><input id="newTopicTitle" placeholder="مثلاً: موسس انقلاب">
+        <label>آیکون (ایموجی)</label><input id="newTopicIcon" placeholder="📖" value="📖" maxlength="4">
+        <label>توضیحات</label><textarea id="newTopicBody" placeholder="متن کامل موضوع..."></textarea>
+        <button class="btn" id="addTopicBtn">افزودن موضوع</button>
+        <div id="m_topic" class="msg"></div>
+      </div>
+      <div class="card">
+        <h3>📋 موضوعات موجود</h3>
+        <div id="topicsAdminList"></div>
+      </div>
+      <div class="card">
+        <h3>✏️ تنظیمات صفحه اصلی</h3>
+        <label>عنوان سایت</label><input id="s_title">
+        <label>زیرعنوان Hero</label><input id="s_sub">
+        <label>منابع (هر خط یک منبع)</label><textarea id="s_sources" rows="5"></textarea>
+        <button class="btn" id="saveSettingsBtn">ذخیره</button>
+        <div id="m_settings" class="msg"></div>
       </div>
     </div>
-    <div class="tabs">
-      <button class="tab active" data-tab="content">محتوا</button>
-      <button class="tab" data-tab="media">رسانه</button>
-      <button class="tab" data-tab="comments">نظرات</button>
-      <button class="tab" data-tab="account">حساب ادمین</button>
+
+    <!-- Media -->
+    <div class="tab-content" id="tab-media">
+      <div class="card">
+        <h3>🖼️ افزودن رسانه</h3>
+        <label>آپلود فایل (حداکثر ۴ مگابایت)</label><input type="file" id="fileInput" accept="image/*,video/*">
+        <button class="btn" id="uploadBtn">آپلود</button>
+        <div style="text-align:center;color:#888;margin:.8rem 0">— یا —</div>
+        <label>افزودن با لینک</label><input id="urlInput" placeholder="https://example.com/image.jpg">
+        <select id="urlType"><option value="image">عکس</option><option value="video">ویدیو</option></select>
+        <button class="btn" id="addUrlBtn">افزودن لینک</button>
+        <div id="m_media" class="msg"></div>
+      </div>
+      <div class="card">
+        <h3>📂 رسانه‌های موجود</h3>
+        <div class="gallery" id="galleryAdmin"></div>
+      </div>
     </div>
 
-    <div class="card tab-content active" id="tab-content">
-      <h2>ویرایش محتوای سایت</h2>
-      <label>عنوان سایت</label><input id="f_title">
-      <label>موسس و پشتوانه</label><textarea id="f_founder" rows="4"></textarea>
-      <label>چرایی و موانع</label><textarea id="f_why" rows="4"></textarea>
-      <label>مباحث دینی</label><textarea id="f_religion" rows="4"></textarea>
-      <label>منابع (هر خط یک منبع)</label><textarea id="f_sources" rows="5"></textarea>
-      <button class="btn" id="saveContentBtn">ذخیره محتوا</button>
-      <div id="m_content" class="msg"></div>
+    <!-- Comments -->
+    <div class="tab-content" id="tab-comments">
+      <div class="card"><h3>⏳ در انتظار تأیید</h3><div id="pendingComments"></div></div>
+      <div class="card"><h3>✅ تأیید شده</h3><div id="approvedComments"></div></div>
     </div>
 
-    <div class="card tab-content" id="tab-media">
-      <h2>افزودن عکس / ویدیو</h2>
-      <label>آپلود فایل</label><input type="file" id="fileInput" accept="image/*,video/*">
-      <button class="btn" id="uploadBtn">آپلود و افزودن</button>
-      <div style="text-align:center;color:#888;margin:.8rem 0">— یا —</div>
-      <label>افزودن با لینک</label>
-      <input id="urlInput" placeholder="https://example.com/image.jpg">
-      <select id="urlType"><option value="image">عکس</option><option value="video">ویدیو</option></select>
-      <button class="btn" id="addUrlBtn">افزودن لینک</button>
-      <div id="m_media" class="msg"></div>
-      <h2 style="margin-top:1.5rem">رسانه‌های موجود</h2>
-      <div class="media" id="galleryAdmin"></div>
+    <!-- Members -->
+    <div class="tab-content" id="tab-members">
+      <div class="card"><h3>👥 لیست اعضا</h3><div id="membersList"></div></div>
     </div>
 
-    <div class="card tab-content" id="tab-comments">
-      <h2>در انتظار تأیید</h2><div id="pendingComments"></div>
-      <h2 style="margin-top:1.5rem">تأیید شده</h2><div id="approvedComments"></div>
+    <!-- Visitors -->
+    <div class="tab-content" id="tab-visitors">
+      <div class="card">
+        <h3>📊 آمار بازدیدکنندگان</h3>
+        <p style="color:#666;margin-bottom:1rem">تعداد کل بازدیدها: <b id="totalVisits" style="color:var(--primary);font-size:1.3rem">0</b></p>
+        <div id="visitorsList" style="font-size:.9rem;color:#555"></div>
+      </div>
     </div>
 
-    <div class="card tab-content" id="tab-account">
-      <h2>تغییر نام کاربری و رمز ادمین</h2>
-      <label>نام کاربری جدید</label><input id="newUser" placeholder="admin">
-      <label>رمز جدید (حداقل ۶ کاراکتر)</label><input type="password" id="newPass">
-      <button class="btn" id="changeCredBtn">ذخیره تغییرات</button>
-      <div id="m_account" class="msg"></div>
+    <!-- Settings -->
+    <div class="tab-content" id="tab-settings">
+      <div class="card">
+        <h3>🔐 تغییر نام کاربری و رمز ادمین</h3>
+        <label>نام کاربری جدید</label><input id="newUser">
+        <label>رمز جدید (خالی = بدون تغییر)</label><input type="password" id="newPass">
+        <button class="btn" id="changeCredBtn">ذخیره</button>
+        <div id="m_account" class="msg"></div>
+      </div>
     </div>
   </div>
 </div>
 
-<div class="overlay" id="authOverlay">
-  <div class="modal">
-    <button class="close-x" id="closeAuth">×</button>
-    <h3>ورود ادمین</h3>
-    <input id="loginUser" placeholder="نام کاربری">
-    <input id="loginPass" type="password" placeholder="رمز عبور">
-    <button class="btn" id="loginBtn">ورود</button>
-    <div id="m_login" class="msg"></div>
-  </div>
-</div>
+<div id="toast"></div>
 
 <script>
-/* ============================================================
-   تنظیمات ادمین پیش‌فرض — قابل تغییر از داخل پنل
-   نام کاربری: admin
-   رمز: Admin@1403
-   ============================================================ */
-const DEFAULT_ADMIN = { username: "admin", password: "Admin@1403" };
-
-/* ============================================================
-   ذخیره‌سازی محلی (localStorage) — بدون نیاز به سرور/Firebase
-   ============================================================ */
+/* ==================== STORAGE ==================== */
 const KEY = {
-  admin:   "site_admin_cred",
-  content: "site_content",
-  media:   "site_media",
-  comments:"site_comments",
-  session: "site_session"
+  admin:"site_admin", users:"site_users", session:"site_session",
+  topics:"site_topics", media:"site_media", comments:"site_comments",
+  settings:"site_settings", visits:"site_visits", visitLog:"site_visitlog"
 };
+const DEFAULT_ADMIN = { username:"admin", password:"Admin@1403", role:"admin", name:"مدیر اصلی", email:"admin@site.ir" };
 
-function getAdmin(){
-  try { return JSON.parse(localStorage.getItem(KEY.admin)) || {...DEFAULT_ADMIN}; }
-  catch { return {...DEFAULT_ADMIN}; }
+const get = (k,d)=>{ try{ return JSON.parse(localStorage.getItem(k)) ?? d; }catch{ return d; } };
+const set = (k,v)=> localStorage.setItem(k, JSON.stringify(v));
+
+function getAdmin(){ return get(KEY.admin, {...DEFAULT_ADMIN}); }
+function getUsers(){ return get(KEY.users, []); }
+function getTopics(){ return get(KEY.topics, []); }
+function getMedia(){ return get(KEY.media, []); }
+function getComments(){ return get(KEY.comments, []); }
+function getSettings(){ return get(KEY.settings, { title:"انقلاب اسلامی", sub:"موسس، پشتوانه، چرایی، موانع و مباحث دینی", sources:"منبع اول: کتاب انقلاب اسلامی\nمنبع دوم: پایگاه اطلاع‌رسانی\nمنبع سوم: مصاحبه و اسناد" }); }
+
+/* ==================== HELPERS ==================== */
+const $ = id=> document.getElementById(id);
+function esc(s){ return (s||"").replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c])); }
+function toast(msg, type="success"){
+  const t = $("toast"); t.textContent = msg; t.className = "show " + type;
+  setTimeout(()=> t.className = "", 3000);
 }
-function setAdmin(a){ localStorage.setItem(KEY.admin, JSON.stringify(a)); }
-
-function getArr(k){
-  try { return JSON.parse(localStorage.getItem(k)) || []; }
-  catch { return []; }
+function showMsg(id, txt, ok=true){
+  const e = $(id); e.textContent = txt; e.className = "msg " + (ok?"ok":"err");
+  if(ok) setTimeout(()=>{ if(e.textContent===txt) e.className="msg"; }, 4000);
 }
-function setArr(k,v){ localStorage.setItem(k, JSON.stringify(v)); }
 
-function getContent(){
-  try { return JSON.parse(localStorage.getItem(KEY.content)) || {
-    title:"انقلاب اسلامی",
-    founder:"",
-    why:"",
-    religion:"",
-    sources:""
-  }; } catch { return {}; }
-}
-function setContent(c){ localStorage.setItem(KEY.content, JSON.stringify(c)); }
-
-const $ = id => document.getElementById(id);
-function showMsg(id, text, ok=true){
-  const e = $(id);
-  e.textContent = text;
-  e.className = "msg " + (ok ? "ok" : "err");
-  if(ok) setTimeout(()=>{ if(e.textContent===text) e.className="msg"; }, 4000);
-}
-function esc(s){ return (s||"").replace(/[<>&"]/g, c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c])); }
-
-/* ============ ورود ادمین ============ */
-$("openAuthBtn").onclick = ()=>{
-  if(localStorage.getItem(KEY.session) === "1"){ showAdmin(); }
-  else { $("authOverlay").classList.add("show"); }
-};
-$("closeAuth").onclick = ()=> $("authOverlay").classList.remove("show");
-
-$("loginBtn").onclick = ()=>{
-  const u = $("loginUser").value.trim();
-  const p = $("loginPass").value;
-  const a = getAdmin();
-  if(u === a.username && p === a.password){
-    localStorage.setItem(KEY.session, "1");
-    $("authOverlay").classList.remove("show");
-    $("m_login").className = "msg";
-    $("loginUser").value = ""; $("loginPass").value = "";
-    showAdmin();
-  } else {
-    showMsg("m_login", "نام کاربری یا رمز اشتباه است.", false);
+/* ==================== STARS ==================== */
+(function makeStars(){
+  const s = $("stars");
+  for(let i=0;i<60;i++){
+    const d = document.createElement("div");
+    d.className = "star";
+    d.style.left = Math.random()*100+"%";
+    d.style.top = Math.random()*100+"%";
+    d.style.animationDelay = Math.random()*2+"s";
+    s.appendChild(d);
   }
+})();
+
+/* ==================== INIT ==================== */
+window.addEventListener("load", ()=>{
+  // ثبت بازدید
+  const visits = get(KEY.visits, 0) + 1;
+  set(KEY.visits, visits);
+  const log = get(KEY.visitLog, []);
+  log.push({ time: Date.now() });
+  set(KEY.visitLog, log.slice(-100));
+
+  // مطمئن شو ادمین هست
+  if(!get(KEY.admin, null)) set(KEY.admin, {...DEFAULT_ADMIN});
+
+  // موضوعات پیش‌فرض
+  if(get(KEY.topics, []).length === 0){
+    set(KEY.topics, [
+      { id:"t1", title:"موسس انقلاب", icon:"👤", body:"امام خمینی (ره) به عنوان بنیان‌گذار و رهبر این حرکت عظیم مردمی، با تکیه بر پشتوانه الهی و همراهی مردم، مسیر انقلاب را هدایت کردند.\n\nایشان با سال‌ها مبارزه، تبعید و رهبری نهضت، توانستند نظام ستمشاهی را سرنگون کنند و جمهوری اسلامی را پایه‌گذاری کنند.", createdAt: Date.now() },
+      { id:"t2", title:"پشتوانه مردمی", icon:"🤝", body:"پشتوانه اصلی انقلاب اسلامی، حضور آگاهانه و یکپارچه مردم در صحنه بود. از تظاهرات میلیونی تا همه‌پرسی نظام جمهوری اسلامی، مردم همواره حامی انقلاب بوده‌اند.\n\nاین پشتوانه مردمی، عامل اصلی مقاومت انقلاب در برابر توطئه‌ها و فشارهای داخلی و خارجی است.", createdAt: Date.now() },
+      { id:"t3", title:"چرایی انقلاب", icon:"❓", body:"انقلاب اسلامی در پاسخ به سال‌ها استبداد، وابستگی، فساد و بی‌عدالتی شکل گرفت. مردم به دنبال آزادی، استقلال، عدالت و حاکمیت ارزش‌های دینی بودند.\n\nعوامل متعددی از جمله ظلم شاه، دخالت بیگانگان، فقر و تبعیض، زمینه‌ساز این حرکت عظیم شدند.", createdAt: Date.now() },
+      { id:"t4", title:"موانع انقلاب", icon:"🚧", body:"انقلاب اسلامی از آغاز با موانع متعددی روبرو بوده است: توطئه‌های خارجی، جنگ تحمیلی هشت‌ساله، تحریم‌های اقتصادی، فتنه‌های داخلی و تهاجم فرهنگی.\n\nبا این حال، اتکا به خدا و پشتوانه مردمی، عبور از این موانع را ممکن ساخته است.", createdAt: Date.now() },
+      { id:"t5", title:"مباحث دینی", icon:"🕌", body:"انقلاب اسلامی ریشه در آموزه‌های دین مبین اسلام دارد. مفاهیمی چون عدالت، امامت، شهادت، مقاومت و ظلم‌ستیزی، مبانی اعتقادی این انقلاب را تشکیل می‌دهند.\n\nقیام امام حسین (ع) و نهضت عاشورا، الگوی اصلی مبارزه با ظلم و ایستادگی در برابر استکبار برای انقلابیون بوده است.", createdAt: Date.now() }
+    ]);
+  }
+
+  // نمایش لاودر و سپس
+  setTimeout(()=>{
+    $("rocketLoader").classList.add("hide");
+    setTimeout(()=>{
+      $("rocketLoader").style.display = "none";
+      const session = localStorage.getItem(KEY.session);
+      if(session) enterSite(JSON.parse(session));
+      else { $("authScreen").style.display = "flex"; }
+    }, 500);
+  }, 1500);
+});
+
+/* ==================== AUTH TABS ==================== */
+document.querySelectorAll("[data-atab]").forEach(b=>{
+  b.onclick = ()=>{
+    document.querySelectorAll("[data-atab]").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    $("loginForm").style.display = b.dataset.atab==="login" ? "block" : "none";
+    $("registerForm").style.display = b.dataset.atab==="register" ? "block" : "none";
+  };
+});
+
+/* ==================== REGISTER ==================== */
+$("registerBtn").onclick = ()=>{
+  const name = $("regName").value.trim();
+  const user = $("regUser").value.trim().toLowerCase();
+  const email = $("regEmail").value.trim();
+  const pass = $("regPass").value;
+  const pass2 = $("regPass2").value;
+
+  if(!name || !user || !email || !pass) return showMsg("m_reg","همه فیلدها الزامی است.",false);
+  if(!/^\S+@\S+\.\S+$/.test(email)) return showMsg("m_reg","ایمیل معتبر نیست.",false);
+  if(pass.length < 6) return showMsg("m_reg","رمز حداقل ۶ کاراکتر.",false);
+  if(pass !== pass2) return showMsg("m_reg","تکرار رمز مطابقت ندارد.",false);
+
+  const admin = getAdmin();
+  if(admin.username === user) return showMsg("m_reg","این نام کاربری قبلاً گرفته شده.",false);
+
+  const users = getUsers();
+  if(users.some(u=>u.username === user)) return showMsg("m_reg","این نام کاربری قبلاً گرفته شده.",false);
+  if(users.some(u=>u.email === email)) return showMsg("m_reg","این ایمیل قبلاً ثبت شده.",false);
+
+  users.push({ username:user, name, email, password:pass, role:"member", createdAt:Date.now() });
+  set(KEY.users, users);
+  showMsg("m_reg","✅ ثبت‌نام موفق! حالا وارد شوید.",true);
+  $("regName").value = $("regUser").value = $("regEmail").value = $("regPass").value = $("regPass2").value = "";
+  setTimeout(()=>{
+    document.querySelector('[data-atab="login"]').click();
+    $("loginUser").value = user;
+  }, 1000);
 };
 
-$("logoutBtn").onclick = ()=>{
-  localStorage.removeItem(KEY.session);
-  $("adminView").style.display = "none";
-  $("siteView").style.display = "block";
-  loadPublic();
+/* ==================== LOGIN ==================== */
+$("loginBtn").onclick = ()=>{
+  const user = $("loginUser").value.trim().toLowerCase();
+  const pass = $("loginPass").value;
+
+  // چک ادمین
+  const admin = getAdmin();
+  if(admin.username === user && admin.password === pass){
+    const sess = { username:admin.username, name:admin.name, role:"admin" };
+    localStorage.setItem(KEY.session, JSON.stringify(sess));
+    enterSite(sess);
+    return;
+  }
+  // چک کاربر عادی
+  const u = getUsers().find(x=>x.username === user && x.password === pass);
+  if(u){
+    const sess = { username:u.username, name:u.name, role:"member" };
+    localStorage.setItem(KEY.session, JSON.stringify(sess));
+    enterSite(sess);
+    return;
+  }
+  showMsg("m_login","نام کاربری یا رمز اشتباه است.",false);
 };
 
-function showAdmin(){
-  $("siteView").style.display = "none";
-  $("adminView").style.display = "block";
-  const a = getAdmin();
-  $("who").textContent = "ادمین: " + a.username;
-  loadAdminAll();
+/* ==================== ENTER SITE ==================== */
+let currentSession = null;
+function enterSite(sess){
+  currentSession = sess;
+  $("authScreen").style.display = "none";
+  $("adminPanel").style.display = "none";
+  $("mainSite").style.display = "block";
+  $("navAdmin").style.display = sess.role === "admin" ? "inline-block" : "none";
+  loadSite();
 }
 
-/* ============ سایت عمومی ============ */
-function loadPublic(){
-  const c = getContent();
-  $("siteTitle").textContent = c.title || "انقلاب اسلامی";
-  $("founder").textContent  = c.founder || "";
-  $("why").textContent      = c.why || "";
-  $("religion").textContent = c.religion || "";
-  const ul = $("sources"); ul.innerHTML = "";
-  (c.sources||"").split("\n").filter(Boolean).forEach(s=>{
-    const li = document.createElement("li"); li.textContent = s; ul.appendChild(li);
+function loadSite(){
+  const s = getSettings();
+  $("siteTitle").innerHTML = `🚀 <span>${esc(s.title.split(" ")[0]||"انقلاب")}</span> ${esc(s.title.split(" ").slice(1).join(" "))}`;
+  $("heroTitle").textContent = s.title;
+  $("heroSub").textContent = s.sub;
+
+  // موضوعات
+  const grid = $("topicGrid");
+  grid.innerHTML = "";
+  const topics = getTopics();
+  if(topics.length === 0){
+    grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#888">هنوز موضوعی اضافه نشده</p>';
+  } else {
+    topics.forEach(t=>{
+      const card = document.createElement("div");
+      card.className = "topic-card";
+      card.innerHTML = `<span class="topic-icon">${esc(t.icon||"📖")}</span><h4>${esc(t.title)}</h4><p>${esc(t.body.substring(0,80))}...</p>`;
+      card.onclick = ()=> openTopic(t.id);
+      grid.appendChild(card);
+    });
+  }
+
+  // منابع
+  const ul = $("sourcesList");
+  ul.innerHTML = "";
+  (s.sources||"").split("\n").filter(Boolean).forEach(src=>{
+    const li = document.createElement("li"); li.textContent = src; ul.appendChild(li);
   });
 
-  const md = $("mediaPublic"); md.innerHTML = "";
-  getArr(KEY.media).slice().sort((a,b)=>b.createdAt-a.createdAt).forEach(m=>{
+  // نظرات
+  loadPublicComments();
+}
+
+function loadPublicComments(){
+  const list = $("cList"); list.innerHTML = "";
+  const comments = getComments().filter(c=>c.approved).sort((a,b)=>b.createdAt-a.createdAt);
+  comments.forEach(c=>{
+    const d = document.createElement("div");
+    d.className = "comment-item";
+    d.innerHTML = `<b>${esc(c.name||"ناشناس")}</b>: ${esc(c.text)}`;
+    list.appendChild(d);
+  });
+}
+
+/* ==================== NAVIGATION ==================== */
+function goHome(){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  $("page-home").classList.add("active");
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+function openTopic(id){
+  const t = getTopics().find(x=>x.id === id);
+  if(!t) return;
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  $("page-detail").classList.add("active");
+  $("detailTitle").innerHTML = `${esc(t.icon||"📖")} ${esc(t.title)}`;
+  $("detailBody").textContent = t.body;
+  // رسانه‌ها (همه رو زیر همه موضوعات نشون می‌ده)
+  const md = $("detailMedia"); md.innerHTML = "";
+  getMedia().sort((a,b)=>b.createdAt-a.createdAt).forEach(m=>{
     const div = document.createElement("div");
-    div.innerHTML = m.type==="image"
-      ? `<img src="${esc(m.url)}" alt="">`
-      : `<video src="${esc(m.url)}" controls></video>`;
+    div.className = "m-item";
+    div.innerHTML = m.type === "image" ? `<img src="${esc(m.url)}">` : `<video src="${esc(m.url)}" controls></video>`;
     md.appendChild(div);
   });
-
-  const list = $("cList"); list.innerHTML = "";
-  getArr(KEY.comments).filter(c=>c.approved).sort((a,b)=>b.createdAt-a.createdAt).forEach(c=>{
-    const div = document.createElement("div");
-    div.className = "comment-item";
-    div.textContent = (c.name||"ناشناس") + ": " + c.text;
-    list.appendChild(div);
-  });
+  window.scrollTo({top:0, behavior:"smooth"});
 }
+
+$("navHome").onclick = goHome;
+$("navLogout").onclick = ()=>{
+  localStorage.removeItem(KEY.session);
+  location.reload();
+};
 
 $("cBtn").onclick = ()=>{
   const text = $("cText").value.trim();
-  const name = $("cName").value.trim();
-  if(!text) return alert("متن نظر خالی است.");
-  const arr = getArr(KEY.comments);
-  arr.push({ id: Date.now()+"_"+Math.random(), text, name, approved:false, createdAt: Date.now() });
-  setArr(KEY.comments, arr);
+  const name = $("cName").value.trim() || (currentSession && currentSession.name) || "ناشناس";
+  if(!text) return toast("متن نظر خالی است","error");
+  const arr = getComments();
+  arr.push({ id:Date.now()+"_"+Math.random(), text, name, approved:false, createdAt:Date.now() });
+  set(KEY.comments, arr);
   $("cText").value = "";
-  alert("نظر ثبت شد و پس از تأیید ادمین نمایش داده می‌شود.");
+  toast("✅ نظر ثبت شد و پس از تأیید ادمین نمایش می‌یابد");
 };
 
-/* ============ تب‌های پنل ============ */
+/* ==================== ADMIN PANEL ==================== */
+$("navAdmin").onclick = ()=>{
+  $("mainSite").style.display = "none";
+  $("adminPanel").style.display = "block";
+  loadAdmin();
+};
+$("adminBack").onclick = ()=>{
+  $("adminPanel").style.display = "none";
+  $("mainSite").style.display = "block";
+  loadSite();
+  goHome();
+};
+$("adminLogout").onclick = ()=>{
+  localStorage.removeItem(KEY.session);
+  location.reload();
+};
+
 document.querySelectorAll(".tab").forEach(t=>{
   t.onclick = ()=>{
     document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
@@ -288,161 +621,215 @@ document.querySelectorAll(".tab").forEach(t=>{
   };
 });
 
-function loadAdminAll(){
-  loadContentAdmin();
+function loadAdmin(){
+  // آمار
+  $("statTopics").textContent = getTopics().length;
+  $("statMembers").textContent = getUsers().length;
+  $("statComments").textContent = getComments().length;
+  $("statVisits").textContent = get(KEY.visits, 0);
+
+  loadTopicsAdmin();
   loadMediaAdmin();
   loadCommentsAdmin();
-  const a = getAdmin();
-  $("newUser").value = a.username;
+  loadMembersAdmin();
+  loadVisitorsAdmin();
+  loadSettingsAdmin();
 }
 
-/* محتوا */
-function loadContentAdmin(){
-  const c = getContent();
-  $("f_title").value    = c.title || "";
-  $("f_founder").value  = c.founder || "";
-  $("f_why").value      = c.why || "";
-  $("f_religion").value = c.religion || "";
-  $("f_sources").value  = c.sources || "";
-}
-$("saveContentBtn").onclick = ()=>{
-  setContent({
-    title: $("f_title").value,
-    founder: $("f_founder").value,
-    why: $("f_why").value,
-    religion: $("f_religion").value,
-    sources: $("f_sources").value,
-    updatedAt: Date.now()
+/* موضوعات */
+function loadTopicsAdmin(){
+  const box = $("topicsAdminList"); box.innerHTML = "";
+  getTopics().forEach(t=>{
+    const d = document.createElement("div");
+    d.className = "member-row";
+    d.innerHTML = `<div><b>${esc(t.icon)} ${esc(t.title)}</b><div style="font-size:.8rem;color:#888">${esc((t.body||"").substring(0,60))}...</div></div>`;
+    const del = document.createElement("button");
+    del.className = "btn danger small"; del.textContent = "🗑️ حذف";
+    del.onclick = ()=>{
+      if(!confirm("حذف شود؟")) return;
+      set(KEY.topics, getTopics().filter(x=>x.id !== t.id));
+      loadAdmin(); loadSite();
+      toast("حذف شد");
+    };
+    d.appendChild(del);
+    box.appendChild(d);
   });
-  showMsg("m_content", "محتوا ذخیره شد ✅", true);
+}
+$("addTopicBtn").onclick = ()=>{
+  const title = $("newTopicTitle").value.trim();
+  const icon = $("newTopicIcon").value.trim() || "📖";
+  const body = $("newTopicBody").value.trim();
+  if(!title || !body) return showMsg("m_topic","عنوان و متن الزامی است.",false);
+  const arr = getTopics();
+  arr.push({ id:"t_"+Date.now()+"_"+Math.random().toString(36).slice(2,7), title, icon, body, createdAt:Date.now() });
+  set(KEY.topics, arr);
+  $("newTopicTitle").value = $("newTopicBody").value = "";
+  $("newTopicIcon").value = "📖";
+  showMsg("m_topic","✅ موضوع اضافه شد",true);
+  loadAdmin(); loadSite();
+};
+
+/* تنظیمات */
+function loadSettingsAdmin(){
+  const s = getSettings();
+  $("s_title").value = s.title;
+  $("s_sub").value = s.sub;
+  $("s_sources").value = s.sources;
+}
+$("saveSettingsBtn").onclick = ()=>{
+  set(KEY.settings, {
+    title: $("s_title").value,
+    sub: $("s_sub").value,
+    sources: $("s_sources").value
+  });
+  showMsg("m_settings","✅ ذخیره شد",true);
+  loadSite();
 };
 
 /* رسانه */
 function loadMediaAdmin(){
-  const md = $("galleryAdmin"); md.innerHTML = "";
-  getArr(KEY.media).slice().sort((a,b)=>b.createdAt-a.createdAt).forEach(m=>{
-    const div = document.createElement("div");
-    div.className = "item";
-    div.innerHTML = (m.type==="image"
-      ? `<img src="${esc(m.url)}" alt="">`
-      : `<video src="${esc(m.url)}" controls></video>`)
-      + `<div style="font-size:.8rem;color:#777;word-break:break-all">${esc(m.name||"")}</div>`;
+  const g = $("galleryAdmin"); g.innerHTML = "";
+  getMedia().sort((a,b)=>b.createdAt-a.createdAt).forEach(m=>{
+    const d = document.createElement("div");
+    d.className = "g-item";
+    d.innerHTML = (m.type === "image" ? `<img src="${esc(m.url)}">` : `<video src="${esc(m.url)}" controls></video>`)
+      + `<div class="name">${esc(m.name||"")}</div>`;
     const del = document.createElement("button");
-    del.className = "btn danger small";
-    del.textContent = "حذف";
+    del.className = "btn danger small"; del.textContent = "🗑️";
     del.onclick = ()=>{
       if(!confirm("حذف شود؟")) return;
-      setArr(KEY.media, getArr(KEY.media).filter(x=>x.id !== m.id));
-      loadMediaAdmin();
+      set(KEY.media, getMedia().filter(x=>x.id !== m.id));
+      loadMediaAdmin(); loadSite();
+      toast("حذف شد");
     };
-    div.appendChild(del);
-    md.appendChild(div);
+    d.appendChild(del);
+    g.appendChild(d);
   });
 }
-
 $("uploadBtn").onclick = ()=>{
   const f = $("fileInput").files[0];
-  if(!f) return showMsg("m_media", "اول یک فایل انتخاب کن.", false);
-  if(f.size > 4 * 1024 * 1024){
-    return showMsg("m_media", "حجم فایل زیاد است (حداکثر ۴ مگابایت). برای فایل بزرگ‌تر از «افزودن با لینک» استفاده کن.", false);
-  }
-  const reader = new FileReader();
-  reader.onload = ()=>{
-    const arr = getArr(KEY.media);
-    arr.push({
-      id: Date.now()+"_"+Math.random(),
-      url: reader.result,
-      type: f.type.startsWith("video") ? "video" : "image",
-      name: f.name,
-      createdAt: Date.now()
-    });
-    setArr(KEY.media, arr);
-    showMsg("m_media", "آپلود شد ✅", true);
+  if(!f) return showMsg("m_media","فایل انتخاب کن.",false);
+  if(f.size > 4*1024*1024) return showMsg("m_media","حداکثر ۴ مگابایت. برای بزرگ‌تر از لینک استفاده کن.",false);
+  const r = new FileReader();
+  r.onload = ()=>{
+    const arr = getMedia();
+    arr.push({ id:"m_"+Date.now(), url:r.result, type:f.type.startsWith("video")?"video":"image", name:f.name, createdAt:Date.now() });
+    set(KEY.media, arr);
+    showMsg("m_media","✅ آپلود شد",true);
     $("fileInput").value = "";
-    loadMediaAdmin();
+    loadMediaAdmin(); loadSite();
   };
-  reader.readAsDataURL(f);
+  r.readAsDataURL(f);
 };
-
 $("addUrlBtn").onclick = ()=>{
   const url = $("urlInput").value.trim();
-  if(!url) return showMsg("m_media", "لینک را وارد کن.", false);
-  const arr = getArr(KEY.media);
-  arr.push({
-    id: Date.now()+"_"+Math.random(),
-    url, type: $("urlType").value,
-    name: url.split("/").pop(),
-    createdAt: Date.now()
-  });
-  setArr(KEY.media, arr);
-  showMsg("m_media", "لینک اضافه شد ✅", true);
+  if(!url) return showMsg("m_media","لینک وارد کن.",false);
+  const arr = getMedia();
+  arr.push({ id:"m_"+Date.now(), url, type:$("urlType").value, name:url.split("/").pop(), createdAt:Date.now() });
+  set(KEY.media, arr);
   $("urlInput").value = "";
-  loadMediaAdmin();
+  showMsg("m_media","✅ اضافه شد",true);
+  loadMediaAdmin(); loadSite();
 };
 
 /* نظرات */
 function loadCommentsAdmin(){
   const pend = $("pendingComments"), appr = $("approvedComments");
   pend.innerHTML = ""; appr.innerHTML = "";
-  const all = getArr(KEY.comments).sort((a,b)=>b.createdAt-a.createdAt);
+  const all = getComments().sort((a,b)=>b.createdAt-a.createdAt);
   all.forEach(c=>{
     const wrap = document.createElement("div");
     if(c.approved){
       wrap.className = "comment-item";
-      wrap.innerHTML = `<div><b>${esc(c.name||"ناشناس")}</b>: ${esc(c.text)}</div>`;
+      wrap.innerHTML = `<b>${esc(c.name)}</b>: ${esc(c.text)}`;
       const del = document.createElement("button");
-      del.className = "btn danger small"; del.style.marginTop=".4rem"; del.textContent="حذف";
+      del.className = "btn danger small"; del.style.marginTop = ".4rem"; del.textContent = "🗑️ حذف";
       del.onclick = ()=>{
         if(!confirm("حذف شود؟")) return;
-        setArr(KEY.comments, getArr(KEY.comments).filter(x=>x.id !== c.id));
-        loadCommentsAdmin();
+        set(KEY.comments, getComments().filter(x=>x.id !== c.id));
+        loadCommentsAdmin(); loadSite();
       };
-      wrap.appendChild(del);
-      appr.appendChild(wrap);
+      wrap.appendChild(del); appr.appendChild(wrap);
     } else {
-      wrap.className = "pending-comment";
-      wrap.innerHTML = `<div><b>${esc(c.name||"ناشناس")}</b>: ${esc(c.text)}</div>`;
-      const actions = document.createElement("div");
-      actions.className = "actions";
+      wrap.className = "pending";
+      wrap.innerHTML = `<b>${esc(c.name)}</b>: ${esc(c.text)}`;
+      const a = document.createElement("div"); a.className = "actions";
       const ok = document.createElement("button");
-      ok.className="btn small"; ok.textContent="تأیید";
+      ok.className = "btn green small"; ok.textContent = "✅ تأیید";
       ok.onclick = ()=>{
-        const arr = getArr(KEY.comments).map(x=> x.id===c.id ? {...x, approved:true} : x);
-        setArr(KEY.comments, arr);
-        loadCommentsAdmin();
+        set(KEY.comments, getComments().map(x=> x.id===c.id ? {...x, approved:true} : x));
+        loadCommentsAdmin(); loadSite(); toast("تأیید شد");
       };
       const del = document.createElement("button");
-      del.className="btn danger small"; del.textContent="حذف";
+      del.className = "btn danger small"; del.textContent = "🗑️ حذف";
       del.onclick = ()=>{
-        if(!confirm("حذف شود؟")) return;
-        setArr(KEY.comments, getArr(KEY.comments).filter(x=>x.id !== c.id));
-        loadCommentsAdmin();
+        set(KEY.comments, getComments().filter(x=>x.id !== c.id));
+        loadCommentsAdmin(); loadSite();
       };
-      actions.appendChild(ok); actions.appendChild(del);
-      wrap.appendChild(actions);
+      a.appendChild(ok); a.appendChild(del); wrap.appendChild(a);
       pend.appendChild(wrap);
     }
   });
-  if(!pend.children.length) pend.innerHTML = '<div style="color:#888;font-size:.9rem">نظر جدیدی در انتظار تأیید نیست.</div>';
+  if(!pend.children.length) pend.innerHTML = '<div style="color:#888;font-size:.9rem">نظری در انتظار نیست.</div>';
   if(!appr.children.length) appr.innerHTML = '<div style="color:#888;font-size:.9rem">هنوز نظری تأیید نشده.</div>';
 }
 
-/* تغییر نام کاربری و رمز */
-$("changeCredBtn").onclick = ()=>{
-  const u = $("newUser").value.trim();
-  const p = $("newPass").value;
-  if(!u) return showMsg("m_account", "نام کاربری را وارد کن.", false);
-  if(p && p.length < 6) return showMsg("m_account", "رمز حداقل ۶ کاراکتر.", false);
-  const a = getAdmin();
-  setAdmin({ username: u, password: p ? p : a.password });
-  $("who").textContent = "ادمین: " + u;
-  $("newPass").value = "";
-  showMsg("m_account", "ذخیره شد ✅ (نام کاربری: " + u + ")", true);
-};
+/* اعضا */
+function loadMembersAdmin(){
+  const box = $("membersList"); box.innerHTML = "";
+  const admin = getAdmin();
+  const adminRow = document.createElement("div");
+  adminRow.className = "member-row";
+  adminRow.innerHTML = `<div><b>${esc(admin.name)}</b> <span class="badge admin">ادمین</span><div style="font-size:.8rem;color:#888">${esc(admin.username)} — ${esc(admin.email||"-")}</div></div>`;
+  box.appendChild(adminRow);
+  getUsers().forEach(u=>{
+    const d = document.createElement("div");
+    d.className = "member-row";
+    d.innerHTML = `<div><b>${esc(u.name)}</b> <span class="badge">عضو</span><div style="font-size:.8rem;color:#888">${esc(u.username)} — ${esc(u.email)}</div></div>`;
+    const del = document.createElement("button");
+    del.className = "btn danger small"; del.textContent = "🗑️ حذف";
+    del.onclick = ()=>{
+      if(!confirm("حذف شود؟")) return;
+      set(KEY.users, getUsers().filter(x=>x.username !== u.username));
+      loadMembersAdmin(); loadAdmin();
+      toast("حذف شد");
+    };
+    d.appendChild(del);
+    box.appendChild(d);
+  });
+  if(!getUsers().length && !box.querySelector(".member-row:nth-child(2)")){
+    // ادمین هست
+  }
+}
 
-/* شروع */
-if(localStorage.getItem(KEY.session) === "1"){ showAdmin(); }
-else { loadPublic(); }
+/* بازدید */
+function loadVisitorsAdmin(){
+  $("totalVisits").textContent = get(KEY.visits, 0);
+  const box = $("visitorsList"); box.innerHTML = "";
+  const log = get(KEY.visitLog, []).slice().reverse().slice(0,20);
+  log.forEach((v,i)=>{
+    const d = document.createElement("div");
+    d.className = "member-row";
+    const date = new Date(v.time).toLocaleString("fa-IR");
+    d.innerHTML = `<div>👤 بازدیدکننده #${log.length - i}</div><div style="color:#888;font-size:.85rem">${date}</div>`;
+    box.appendChild(d);
+  });
+  if(!log.length) box.innerHTML = '<div style="color:#888">هنوز بازدیدی ثبت نشده.</div>';
+}
+
+/* حساب ادمین */
+$("changeCredBtn").onclick = ()=>{
+  const u = $("newUser").value.trim().toLowerCase();
+  const p = $("newPass").value;
+  if(!u) return showMsg("m_account","نام کاربری الزامی است.",false);
+  if(p && p.length < 6) return showMsg("m_account","رمز حداقل ۶ کاراکتر.",false);
+  const a = getAdmin();
+  const updated = { ...a, username:u, password: p || a.password };
+  set(KEY.admin, updated);
+  $("newPass").value = "";
+  showMsg("m_account","✅ ذخیره شد",true);
+  toast("اطلاعات ادمین بروزرسانی شد");
+};
 </script>
 </body>
 </html>
